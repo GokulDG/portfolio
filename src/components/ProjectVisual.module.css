@@ -1,0 +1,65 @@
+.figure {
+  width: 100%;
+  color: var(--ink-2);
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.stroke,
+.hot,
+.dash,
+.faint {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.hot {
+  stroke: var(--lime);
+}
+
+.dash {
+  stroke-dasharray: 3 4;
+  stroke: var(--ink-3);
+}
+
+.faint {
+  stroke: var(--line);
+}
+
+.dot {
+  fill: var(--ink);
+}
+
+.limeFill {
+  fill: var(--lime);
+}
+
+.text {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  fill: var(--ink-3);
+}
+
+.level {
+  fill: var(--lime-dim);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: level 9s ease-in-out infinite alternate;
+}
+
+@keyframes level {
+  from {
+    transform: scaleY(0.22);
+  }
+  to {
+    transform: scaleY(0.86);
+  }
+}

@@ -1,0 +1,66 @@
+.rail {
+  position: fixed;
+  z-index: 20;
+  left: calc(var(--gutter) / 2);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  pointer-events: none;
+}
+
+.track {
+  position: absolute;
+  top: 5.5rem;
+  bottom: 9rem;
+  left: 0;
+  width: 1px;
+  background: var(--line);
+}
+
+.track i {
+  position: absolute;
+  inset: 0;
+  background: var(--lime);
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+.readout {
+  position: absolute;
+  bottom: 1.75rem;
+  left: 0;
+  display: flex;
+  gap: 0.6em;
+  transform: rotate(-90deg) translateY(-50%);
+  transform-origin: left bottom;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-3);
+}
+
+.readout b {
+  font-weight: 500;
+  color: var(--lime);
+}
+
+.readout em {
+  font-style: normal;
+  color: var(--ink-2);
+  animation: swap 0.5s var(--ease) both;
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+    transform: translateX(-0.6em);
+  }
+}
+
+@media (max-width: 899px) {
+  .rail {
+    display: none;
+  }
+}

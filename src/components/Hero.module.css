@@ -1,0 +1,209 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  padding: 6.5rem var(--gutter) clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.kicker {
+  display: flex;
+  gap: 2.5rem;
+  margin-bottom: auto;
+  animation: fade 1s ease 0.9s both;
+}
+
+.kicker span:first-child {
+  color: var(--lime);
+}
+
+.headline {
+  font-size: var(--fs-mega);
+  font-weight: 800;
+  font-stretch: 84%;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin-left: -0.04em;
+}
+
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.04em 0.06em 0.1em 0.04em;
+  margin: -0.04em 0.12em -0.1em -0.04em;
+  will-change: transform;
+}
+
+.word > span {
+  display: block;
+  animation: rise 1.25s var(--ease) both;
+  animation-delay: calc(0.1s + var(--i) * 0.05s);
+}
+
+.narrow {
+  display: none;
+}
+
+.headline em {
+  font-size: 1.04em;
+  letter-spacing: -0.03em;
+  padding-right: 0.06em;
+}
+
+.foot {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) auto;
+  align-items: end;
+  gap: 2rem;
+  margin-top: clamp(1.75rem, 3.5vw, 3rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  animation: fade 1s ease 0.8s both;
+}
+
+/* The opening cut: one lime line drawn across the frame */
+.foot::before {
+  content: "";
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  height: 1px;
+  margin-top: calc(-1.25rem - 1px);
+  background: var(--lime);
+  transform-origin: left;
+  animation: draw 1.3s var(--ease) 0.05s both;
+}
+
+.statement {
+  max-width: 30ch;
+  font-size: var(--fs-lead);
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.id {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.id div {
+  display: grid;
+  grid-template-columns: 4.5em 1fr;
+}
+
+.id dt {
+  color: var(--ink-3);
+}
+
+.id dd {
+  color: var(--ink);
+}
+
+.scroll {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.5rem 0;
+}
+
+.scroll i {
+  position: relative;
+  width: 1px;
+  height: 2.75rem;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.scroll i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--lime);
+  animation: drop 2.2s var(--ease) 1.6s infinite;
+  transform: translateY(-101%);
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(108%);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes draw {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  70% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+@keyframes drop {
+  0% {
+    transform: translateY(-101%);
+  }
+  55%,
+  100% {
+    transform: translateY(101%);
+  }
+}
+
+@media (max-width: 899px) {
+  .hero {
+    padding-top: 5.5rem;
+  }
+
+  .kicker {
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .headline {
+    font-size: clamp(3rem, 15.2vw, 7rem);
+    font-stretch: 80%;
+  }
+
+  .narrow {
+    display: inline;
+  }
+
+  .wide {
+    display: none;
+  }
+
+  .foot {
+    grid-template-columns: 1fr auto;
+    gap: 1.25rem;
+  }
+
+  .id {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .scroll {
+    grid-row: 1;
+    grid-column: 2;
+  }
+}

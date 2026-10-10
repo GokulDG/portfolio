@@ -1,0 +1,272 @@
+/* ───────────────────────── Tokens ───────────────────────── */
+:root {
+  --bg: #0b0c0a;
+  --bg-2: #11130f;
+  --ink: #ece9df;
+  --ink-2: #a9a79c;
+  --ink-3: #6f6e66;
+  --line: rgba(236, 233, 223, 0.14);
+  --line-faint: rgba(236, 233, 223, 0.05);
+  --lime: #c6ff3d;
+  --lime-dim: rgba(198, 255, 61, 0.14);
+  --warn: #ff7a4d; /* failure states in the Systems Lab only */
+
+  --font-display: var(--font-bricolage), "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-instrument), "Times New Roman", serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --fs-mega: clamp(3.1rem, 12.4vw, 13.5rem);
+  --fs-display: clamp(2.6rem, 8.4vw, 8.75rem);
+  --fs-title: clamp(1.75rem, 3.6vw, 3.25rem);
+  --fs-lead: clamp(1.125rem, 1.55vw, 1.5rem);
+  --fs-body: clamp(0.975rem, 1.05vw, 1.0625rem);
+  --fs-mono: 0.6875rem;
+
+  --gutter: clamp(1.25rem, 4.2vw, 4.5rem);
+  --section: clamp(6rem, 14vw, 13rem);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+/* Four editorial column rules behind everything */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 var(--gutter);
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(to right, var(--line-faint) 1px, transparent 1px) 0 0 / 25% 100%;
+  border-right: 1px solid var(--line-faint);
+}
+
+/* Film grain: one small tile, rasterised once */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+svg {
+  display: block;
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+main,
+footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ───────────────────────── Shared pieces ───────────────────────── */
+.skip {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  background: var(--lime);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transform: translateY(-200%);
+}
+
+.skip:focus {
+  transform: none;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+
+.lime {
+  color: var(--lime);
+}
+
+.section {
+  padding: var(--section) var(--gutter) 0;
+}
+
+/* Section marker: index, name, hairline. Reads like a span in a trace. */
+.marker {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: clamp(2.5rem, 6vw, 5rem);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.marker b {
+  font-weight: 500;
+  color: var(--lime);
+}
+
+.marker::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.display {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  font-stretch: 88%;
+}
+
+/* Masked line: children rise from below the baseline */
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.mask > span {
+  display: block;
+  will-change: transform;
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.2em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease);
+}
+
+.link:hover::after,
+.link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.35em 0.7em;
+  border: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,117 @@
+.demo {
+  display: grid;
+  gap: 1.5rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+
+.ladder {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.ladder li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 0.15rem 0.75rem;
+  margin-left: calc(var(--step) * 9%);
+  padding: 0.95rem 1rem 1.05rem;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  transition: border-color 0.5s, opacity 0.5s, background-color 0.5s;
+}
+
+.ladder span {
+  grid-row: span 2;
+  padding-top: 0.3em;
+  color: var(--ink-3);
+}
+
+.ladder b {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.ladder em {
+  font-style: normal;
+  color: var(--ink-3);
+}
+
+.ladder li[data-state="idle"] {
+  opacity: 0.45;
+}
+
+.ladder li[data-state="running"],
+.ladder li[data-state="acknowledged"] {
+  border-color: var(--lime);
+}
+
+.ladder li[data-state="running"] span,
+.ladder li[data-state="acknowledged"] span,
+.ladder li[data-state="acknowledged"] em {
+  color: var(--lime);
+}
+
+.ladder li[data-state="acknowledged"] {
+  background: var(--lime-dim);
+}
+
+/* The SLA timer */
+.ladder i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--lime);
+  transform-origin: left;
+  animation: timer 3.4s linear both;
+}
+
+.demo[data-paused="true"] .ladder i {
+  animation-play-state: paused;
+}
+
+@keyframes timer {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+}
+
+.controls button {
+  padding: 0.7rem 1.1rem;
+  background: var(--lime);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: opacity 0.3s, transform 0.3s var(--ease);
+}
+
+.controls button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.controls button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.controls p {
+  flex: 1;
+  min-width: 14rem;
+  font-size: 0.875rem;
+  color: var(--ink-2);
+}

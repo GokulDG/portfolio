@@ -1,0 +1,206 @@
+.nav {
+  position: fixed;
+  z-index: 40;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.35rem var(--gutter);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: transform 0.6s var(--ease);
+  animation: settle 0.9s var(--ease) 0.75s both;
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(-0.8rem);
+  }
+}
+
+.hidden:not(.open):not(:focus-within) {
+  transform: translateY(-110%);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--line);
+  color: var(--lime);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-right: auto;
+  color: var(--ink-2);
+}
+
+.status i {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+
+.status[data-open="true"] i {
+  background: var(--lime);
+}
+
+.status[data-open="true"] i::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--lime);
+  animation: ping 2.4s ease-out infinite;
+}
+
+@keyframes ping {
+  from {
+    transform: scale(0.4);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.links ul {
+  display: flex;
+  gap: clamp(1.25rem, 2.4vw, 2.5rem);
+}
+
+.links a {
+  display: inline-block;
+  padding: 0.4rem 0;
+  color: var(--ink-2);
+  transition: color 0.3s;
+}
+
+.links a span {
+  display: none;
+}
+
+.links a:hover,
+.links a:focus-visible {
+  color: var(--lime);
+}
+
+.toggle {
+  display: none;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--line);
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+
+@media (max-width: 1100px) {
+  .name {
+    display: none;
+  }
+}
+
+@media (max-width: 899px) {
+  .nav {
+    gap: 0.9rem;
+    padding-block: 1rem;
+  }
+
+  .status {
+    font-size: 0.5625rem;
+    letter-spacing: 0.08em;
+  }
+
+  .toggle {
+    display: block;
+    position: relative;
+    z-index: 2;
+  }
+
+  .brand {
+    position: relative;
+    z-index: 2;
+  }
+
+  .links {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 6rem var(--gutter) 3rem;
+    background: var(--bg);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.4s, visibility 0s 0.4s;
+  }
+
+  .open .links {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.4s;
+  }
+
+  .open .status {
+    visibility: hidden;
+  }
+
+  .links ul {
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+  }
+
+  .links li {
+    border-top: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  .open .links li {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    transition-delay: calc(var(--i) * 50ms + 80ms);
+  }
+
+  .links a {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.9rem 0;
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .links a span {
+    display: inline;
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: var(--lime);
+  }
+}
