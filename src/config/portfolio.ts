@@ -65,6 +65,8 @@ export const portfolio = {
   role: "Full-Stack & Backend Engineer",
   location: "Pondicherry, India",
   coordinates: "11.94° N  79.81° E",
+  /** IANA zone for the local clock in the mobile menu. */
+  timeZone: "Asia/Kolkata",
 
   /** PLACEHOLDER: the résumé says "3+ years", the brief says ~2.6. Set the figure you will stand behind. */
   experience: "2.6 years",

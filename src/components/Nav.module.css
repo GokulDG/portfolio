@@ -13,7 +13,9 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   transition: transform 0.6s var(--ease);
-  animation: settle 0.9s var(--ease) 0.75s both;
+  /* backwards, not both: a filled transform would make .nav the containing
+     block for the fixed mobile menu and squash it to the bar's height. */
+  animation: settle 0.9s var(--ease) 0.75s backwards;
 }
 
 @keyframes settle {
@@ -96,10 +98,6 @@
   transition: color 0.3s;
 }
 
-.links a span {
-  display: none;
-}
-
 .links a:hover,
 .links a:focus-visible {
   color: var(--lime);
@@ -113,6 +111,17 @@
   text-transform: inherit;
 }
 
+/* Pieces that only exist in the mobile bar and menu */
+.readout,
+.progress,
+.ghost,
+.menuMeta,
+.menuFoot,
+.num,
+.arrow {
+  display: none;
+}
+
 @media (max-width: 1100px) {
   .name {
     display: none;
@@ -121,86 +130,405 @@
 
 @media (max-width: 899px) {
   .nav {
-    gap: 0.9rem;
-    padding-block: 1rem;
+    gap: 0.75rem;
+    padding-block: 0.85rem;
   }
 
-  .status {
-    font-size: 0.5625rem;
-    letter-spacing: 0.08em;
-  }
-
-  .toggle {
-    display: block;
-    position: relative;
-    z-index: 2;
-  }
-
-  .brand {
-    position: relative;
-    z-index: 2;
-  }
-
-  .links {
-    position: fixed;
+  /* Backdrop on a pseudo-element: a filter on .nav itself would trap the fixed menu. */
+  .nav::before {
+    content: "";
+    position: absolute;
     inset: 0;
-    display: flex;
-    align-items: flex-end;
-    padding: 6rem var(--gutter) 3rem;
-    background: var(--bg);
-    visibility: hidden;
+    z-index: -1;
+    background: rgba(11, 12, 10, 0.78);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
+    border-bottom: 1px solid var(--line-faint);
     opacity: 0;
-    transition: opacity 0.4s, visibility 0s 0.4s;
-  }
-
-  .open .links {
-    visibility: visible;
-    opacity: 1;
     transition: opacity 0.4s;
   }
 
-  .open .status {
+  .scrolled::before {
+    opacity: 1;
+  }
+
+  .open::before {
+    opacity: 0;
+  }
+
+  .brand,
+  .toggle,
+  .readout {
+    position: relative;
+    z-index: 2;
+  }
+
+  .status {
+    display: none;
+  }
+
+  .readout {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5em;
+    margin: 0 auto 0 0.25rem;
+    font-size: 0.625rem;
+    color: var(--ink-3);
+    transition: opacity 0.3s;
+  }
+
+  .readout b {
+    font-weight: 500;
+    color: var(--lime);
+  }
+
+  .readout em {
+    font-style: normal;
+    color: var(--ink-2);
+    animation: swap 0.5s var(--ease) both;
+  }
+
+  .open .readout {
+    opacity: 0;
+  }
+
+  .progress {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    height: 1px;
+    background: var(--lime);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: opacity 0.3s;
+  }
+
+  .open .progress {
+    opacity: 0;
+  }
+
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg);
+    transition: background 0.4s var(--ease), color 0.4s var(--ease), border-color 0.4s var(--ease);
+  }
+
+  .open .toggle {
+    background: var(--lime);
+    border-color: var(--lime);
+    color: var(--bg);
+  }
+
+  .burger {
+    position: relative;
+    width: 14px;
+    height: 8px;
+  }
+
+  .burger i {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 0.5s var(--ease);
+  }
+
+  .burger i:first-child {
+    top: 0;
+  }
+
+  .burger i:last-child {
+    bottom: 0;
+  }
+
+  .open .burger i:first-child {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+
+  .open .burger i:last-child {
+    transform: translateY(-3.25px) rotate(-45deg);
+  }
+
+  /* The menu grows out of the toggle as a circle. */
+  .links {
+    --ox: calc(100% - var(--gutter) - 2.75rem);
+    --oy: 2.1rem;
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 5.5rem var(--gutter) 1.6rem;
+    overflow: hidden;
+    background: var(--bg);
+    clip-path: circle(0 at var(--ox) var(--oy));
     visibility: hidden;
+    transition: clip-path 0.65s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s 0.65s;
+  }
+
+  .open .links {
+    clip-path: circle(150vmax at var(--ox) var(--oy));
+    visibility: visible;
+    transition: clip-path 0.85s cubic-bezier(0.7, 0, 0.2, 1);
+  }
+
+  .links::before {
+    content: "";
+    position: absolute;
+    inset: 0 var(--gutter);
+    pointer-events: none;
+    background: linear-gradient(to right, var(--line-faint) 1px, transparent 1px) 0 0 / 25% 100%;
+    border-right: 1px solid var(--line-faint);
+  }
+
+  /* The current section's index, set huge and hollow behind the list. */
+  .ghost {
+    display: block;
+    position: absolute;
+    top: 4.75rem;
+    right: calc(var(--gutter) - 0.04em);
+    font-family: var(--font-display);
+    font-size: min(52vw, 30vh);
+    font-weight: 700;
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--line);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+
+  .open .ghost {
+    opacity: 1;
+    transform: none;
+    transition: opacity 1s var(--ease) 0.35s, transform 1.2s var(--ease) 0.35s;
+  }
+
+  .menuMeta {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+    font-size: 0.625rem;
+    color: var(--ink-3);
   }
 
   .links ul {
+    position: relative;
     flex-direction: column;
     gap: 0;
     width: 100%;
   }
 
   .links li {
-    border-top: 1px solid var(--line);
-    opacity: 0;
-    transform: translateY(1rem);
+    position: relative;
   }
 
-  .open .links li {
-    opacity: 1;
-    transform: none;
-    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-    transition-delay: calc(var(--i) * 50ms + 80ms);
+  .links li::before,
+  .links li:last-child::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--line);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .links li::before {
+    top: 0;
+  }
+
+  .links li:last-child::after {
+    bottom: 0;
+  }
+
+  .open .links li::before,
+  .open .links li:last-child::after {
+    transform: scaleX(1);
+    transition: transform 0.9s var(--ease) calc(var(--i) * 60ms + 0.2s);
   }
 
   .links a {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 1rem;
-    padding: 0.9rem 0;
+    padding: 0.75rem 0;
     font-family: var(--font-display);
-    font-size: 2.5rem;
+    font-size: clamp(2.1rem, 11vw, 3rem);
     font-weight: 700;
+    font-stretch: 88%;
     letter-spacing: -0.04em;
     line-height: 1;
     color: var(--ink);
   }
 
-  .links a span {
-    display: inline;
+  .num {
+    display: block;
+    align-self: flex-start;
+    width: 1.5rem;
+    padding-top: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: var(--lime);
+  }
+
+  .label {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+
+  .label > span {
+    display: block;
+    transform: translateY(105%);
+  }
+
+  .open .label > span {
+    transform: none;
+    transition: transform 0.8s var(--ease) calc(var(--i) * 60ms + 0.25s);
+  }
+
+  .arrow {
+    display: block;
+    flex: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-left: auto;
+    fill: none;
+    stroke: var(--ink-3);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    opacity: 0;
+    transform: translate(-0.4rem, 0.4rem);
+  }
+
+  .open .arrow {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.6s var(--ease) calc(var(--i) * 60ms + 0.45s),
+      transform 0.6s var(--ease) calc(var(--i) * 60ms + 0.45s);
+  }
+
+  .links a:active .label > span {
+    transform: translateX(0.35rem);
+    transition-duration: 0.2s;
+    transition-delay: 0s;
+  }
+
+  .current a,
+  .links a:hover,
+  .links a:focus-visible {
+    color: var(--lime);
+  }
+
+  .current .arrow {
+    stroke: var(--lime);
+  }
+
+  .menuFoot {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem 1rem;
+    margin-top: 1.4rem;
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+
+  .open .menuFoot {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.7s var(--ease) 0.6s, transform 0.7s var(--ease) 0.6s;
+  }
+
+  .menuFoot p {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .menuFoot span {
+    font-size: 0.5625rem;
+    color: var(--ink-3);
+  }
+
+  .menuFoot b {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  .menuFoot b i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-3);
+  }
+
+  .menuFoot b[data-open="true"] i {
+    background: var(--lime);
+    box-shadow: 0 0 0 0 var(--lime-dim);
+    animation: glow 2.4s ease-out infinite;
+  }
+
+  .wide {
+    grid-column: 1 / -1;
+  }
+
+  .menuFoot .socials {
+    display: flex;
+    gap: 0.5rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .socials a {
+    flex: 1;
+    display: block;
+    padding: 0.7rem 0;
+    border: 1px solid var(--line);
     font-family: var(--font-mono);
     font-size: var(--fs-mono);
     font-weight: 400;
     letter-spacing: 0.12em;
+    line-height: 1;
+    text-align: center;
+    color: var(--ink-2);
+  }
+
+  .socials a:active {
+    border-color: var(--lime);
     color: var(--lime);
+  }
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+    transform: translateX(-0.6em);
+  }
+}
+
+@keyframes glow {
+  70%,
+  100% {
+    box-shadow: 0 0 0 7px rgba(198, 255, 61, 0);
+  }
+  0% {
+    box-shadow: 0 0 0 0 rgba(198, 255, 61, 0.55);
   }
 }
